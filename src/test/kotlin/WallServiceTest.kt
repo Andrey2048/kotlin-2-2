@@ -19,7 +19,7 @@ class WallServiceTest {
 
         WallService.add(myPost)
         result = (myPost.id > 0)
-        assertTrue(result)
+        assertFalse(result)
     }
 
     @Test
