@@ -14,7 +14,25 @@ class WallServiceTest {
     fun add() {
         val likes = Likes()
         val comments = Comments()
-        val myPost = Post(id = 10, likes = likes, comments = comments)
+        val copyright = Copyright()
+        val reposts = Reposts()
+        val views = Views()
+        val postSource = PostSource()
+        val geo = Geo()
+        val copyHistory = emptyArray<Post>()
+        val donut = Donut()
+        val myPost = Post(
+            id = 10,
+            likes = likes,
+            comments = comments,
+            copyright = copyright,
+            reposts = reposts,
+            views = views,
+            postSource = postSource,
+            geo = geo,
+            copyHistory = copyHistory,
+            donut = donut
+        )
         val result: Boolean
 
         WallService.add(myPost)
@@ -26,10 +44,56 @@ class WallServiceTest {
     fun update_postShouldBeUpdate() {
         val likes = Likes()
         val comments = Comments()
+        val copyright = Copyright()
+        val reposts = Reposts()
+        val views = Views()
+        val postSource = PostSource()
+        val geo = Geo()
+        val copyHistory = emptyArray<Post>()
+        val donut = Donut()
         val result: Boolean
-        WallService.add(Post(likes = likes, comments = comments))
-        WallService.add(Post(likes = likes, comments = comments))
-        result = WallService.update(Post(id = 2, likes = likes, comments = comments, text = "Updated post"))
+
+        WallService.add(
+            Post(
+                likes = likes,
+                comments = comments,
+                copyright = copyright,
+                reposts = reposts,
+                views = views,
+                postSource = postSource,
+                geo = geo,
+                copyHistory = copyHistory,
+                donut = donut
+            )
+        )
+        WallService.add(
+            Post(
+                likes = likes,
+                comments = comments,
+                copyright = copyright,
+                reposts = reposts,
+                views = views,
+                postSource = postSource,
+                geo = geo,
+                copyHistory = copyHistory,
+                donut = donut
+            )
+        )
+        result = WallService.update(
+            Post(
+                id = 2,
+                likes = likes,
+                comments = comments,
+                text = "Updated post",
+                copyright = copyright,
+                reposts = reposts,
+                views = views,
+                postSource = postSource,
+                geo = geo,
+                copyHistory = copyHistory,
+                donut = donut
+            )
+        )
         assertTrue(result)
     }
 
@@ -37,10 +101,56 @@ class WallServiceTest {
     fun update_postShouldBeNotUpdate() {
         val likes = Likes()
         val comments = Comments()
+        val copyright = Copyright()
+        val reposts = Reposts()
+        val views = Views()
+        val postSource = PostSource()
+        val geo = Geo()
+        val copyHistory = emptyArray<Post>()
+        val donut = Donut()
         val result: Boolean
-        WallService.add(Post(likes = likes, comments = comments))
-        WallService.add(Post(likes = likes, comments = comments))
-        result = WallService.update(Post(id = 5, likes = likes, comments = comments, text = "Updated post"))
+
+        WallService.add(
+            Post(
+                likes = likes,
+                comments = comments,
+                copyright = copyright,
+                reposts = reposts,
+                views = views,
+                postSource = postSource,
+                geo = geo,
+                copyHistory = copyHistory,
+                donut = donut
+            )
+        )
+        WallService.add(
+            Post(
+                likes = likes,
+                comments = comments,
+                copyright = copyright,
+                reposts = reposts,
+                views = views,
+                postSource = postSource,
+                geo = geo,
+                copyHistory = copyHistory,
+                donut = donut
+            )
+        )
+        result = WallService.update(
+            Post(
+                id = 5,
+                likes = likes,
+                comments = comments,
+                text = "Updated post",
+                copyright = copyright,
+                reposts = reposts,
+                views = views,
+                postSource = postSource,
+                geo = geo,
+                copyHistory = copyHistory,
+                donut = donut
+            )
+        )
         assertFalse(result)
     }
 
