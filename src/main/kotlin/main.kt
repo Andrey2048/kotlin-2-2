@@ -69,6 +69,112 @@ class Donut(
     val editMode: String = ""
 )
 
+interface Attachments  {
+    val type: String
+}
+
+data class PhotoAttachment(val photo: Photo): Attachments {
+    override val type = "photo"
+}
+
+data class Photo (
+    val id: Int,
+    val albumId: Int,
+    val ownerId: Int,
+    val text: String,
+    val date: Int,
+    val sizes: Array<TypeOfPhoto>,
+    val width: Int,
+    val height: Int
+)
+
+data class TypeOfPhoto (
+    val type: String,
+    val url: String,
+    val width: Int,
+    val height: Int
+)
+data class AlbumPhotoAttachment(val albumPhoto: AlbumPhoto): Attachments {
+    override val type = "album"
+}
+
+data class AlbumPhoto (
+    val id: Int,
+    val thumb: Photo,
+    val ownerId: Int,
+    val title: String,
+    val description: String,
+    val created: Int,
+    val updated: Int,
+    val size: Int
+)
+data class AudioAttachment(val audio: Audio): Attachments {
+    override val type = "audio"
+}
+
+data class Audio (
+    val id: Int,
+    val ownerId: Int,
+    val artist: String,
+    val title: String,
+    val duration: Int,
+    val url: String,
+    val lyricsId: Int,
+    val albumId: Int,
+    val genreId: Int,
+    val date: Int,
+    val noSearch: Boolean,
+    val isHq: Boolean,
+)
+
+data class LinkAttachment(val link: Link): Attachments {
+    override val type = "link"
+}
+
+data class Link (
+    val url: String,
+    val title: String,
+    val caption: String,
+    val description: String,
+    val photo: Photo,
+    val product: Product,
+    val button: Button,
+    val previewPage: String,
+    val previewUrl: String
+)
+
+data class Product(
+    val accessKey: String,
+    val price: Int
+)
+
+data class Button(
+    val title: String,
+    val actionType: String,
+    val actionUrl: String
+)
+
+data class NoteAttachment(val note: Note): Attachments {
+    override val type = "note"
+}
+
+data class Note (
+    val id: Int,
+    val ownerId: Int,
+    val title: String,
+    val text: String,
+    val date: Int,
+    val comments: Int,
+    val readComments: Int,
+    val viewUrl: String,
+    val privacyView: String,
+    val canComment: Boolean,
+    val description: String,
+    val textWiki: String
+)
+
+
+
 data class Post(
     val id: Int = 10, // Идентификатор записи
     val ownerId: Int = 1, // Идентификатор владельца стены, на которой размещена запись
@@ -97,6 +203,7 @@ data class Post(
     val isFavorite: Boolean = false, //true, если объект добавлен в закладки у текущего пользователя
     val donut: Donut, //Информация о записи VK Donut
     val postponedId: Boolean = false, //Идентификатор отложенной записи
+    val attachements: Array<Attachments> = emptyArray() // вложения
 )
 
 object WallService {
