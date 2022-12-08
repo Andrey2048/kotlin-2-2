@@ -23,6 +23,7 @@ class Comments(
         }
 }
 
+
 class Copyright(
     val id: Int = 0,
     val link: String = "",
@@ -40,8 +41,7 @@ class Reposts(
         }
 }
 
-class Views(count: Int = 0)
-{
+class Views(count: Int = 0) {
     var count: Int = count
         set(value) {
             if (value > 0) field = value
@@ -58,7 +58,7 @@ class PostSource(
 class Geo(
     val type: String = "", //тип места
     val coordinates: String = "", //координаты места
-    val place: String  = "" // описание места
+    val place: String = "" // описание места
 )
 
 class Donut(
@@ -69,15 +69,15 @@ class Donut(
     val editMode: String = ""
 )
 
-interface Attachments  {
+interface Attachments {
     val type: String
 }
 
-data class PhotoAttachment(val photo: Photo): Attachments {
+data class PhotoAttachment(val photo: Photo) : Attachments {
     override val type = "photo"
 }
 
-data class Photo (
+data class Photo(
     val id: Int,
     val albumId: Int,
     val ownerId: Int,
@@ -88,17 +88,18 @@ data class Photo (
     val height: Int
 )
 
-data class TypeOfPhoto (
+data class TypeOfPhoto(
     val type: String,
     val url: String,
     val width: Int,
     val height: Int
 )
-data class AlbumPhotoAttachment(val albumPhoto: AlbumPhoto): Attachments {
+
+data class AlbumPhotoAttachment(val albumPhoto: AlbumPhoto) : Attachments {
     override val type = "album"
 }
 
-data class AlbumPhoto (
+data class AlbumPhoto(
     val id: Int,
     val thumb: Photo,
     val ownerId: Int,
@@ -108,11 +109,12 @@ data class AlbumPhoto (
     val updated: Int,
     val size: Int
 )
-data class AudioAttachment(val audio: Audio): Attachments {
+
+data class AudioAttachment(val audio: Audio) : Attachments {
     override val type = "audio"
 }
 
-data class Audio (
+data class Audio(
     val id: Int,
     val ownerId: Int,
     val artist: String,
@@ -127,11 +129,11 @@ data class Audio (
     val isHq: Boolean,
 )
 
-data class LinkAttachment(val link: Link): Attachments {
+data class LinkAttachment(val link: Link) : Attachments {
     override val type = "link"
 }
 
-data class Link (
+data class Link(
     val url: String,
     val title: String,
     val caption: String,
@@ -154,11 +156,11 @@ data class Button(
     val actionUrl: String
 )
 
-data class NoteAttachment(val note: Note): Attachments {
+data class NoteAttachment(val note: Note) : Attachments {
     override val type = "note"
 }
 
-data class Note (
+data class Note(
     val id: Int,
     val ownerId: Int,
     val title: String,
@@ -173,7 +175,27 @@ data class Note (
     val textWiki: String
 )
 
+data class Comment(
+    val id: Int = 20, //Идентификатор комментария
+    val fromId: Int = 2, //Идентификатор автора комментария
+    val date: Int = 1590075400, //Дата создания комментария в формате Unixtime
+    val text: String = "It's my first comment", //Текст комментария
+    val donut: Donut? = null, //Информация о VK Donut
+    val replyToUser: Int = 0, //Идентификатор пользователя или сообщества, в ответ которому оставлен текущий комментарий (если применимо)
+    val replyToComment: Int = 0, //Идентификатор комментария, в ответ на который оставлен текущий (если применимо)
+    val attachments: Attachments? = null, //Медиавложения комментария (фотографии, ссылки и т.п.)
+    val parents_stack: IntArray? = null, //Массив идентификаторов родительских комментариев
+    val thread: Thread? = null //Информация о вложенной ветке комментариев
+)
 
+// Информация о вложенной ветке комментариев
+data class Thread(
+    val count: Int, //количество комментариев в ветке
+    val items: Array<Comment>,//массив объектов комментариев к записи
+    val canPost: Boolean, //может ли текущий пользователь оставлять комментарии в этой ветке
+    val showReplyButton: Boolean, //нужно ли отображать кнопку «ответить» в ветке
+    val groupsCanPost: Boolean, //могут ли сообщества оставлять комментарии в ветке
+)
 
 data class Post(
     val id: Int = 10, // Идентификатор записи
@@ -206,8 +228,10 @@ data class Post(
     val attachements: Array<Attachments> = emptyArray() // вложения
 )
 
+
 object WallService {
     private var posts = emptyArray<Post>()
+    private var comments = emptyArray<Comment>()
     private var counter = 0
 
     fun add(post: Post): Post {
@@ -232,9 +256,22 @@ object WallService {
     fun clear() {
         posts = emptyArray()
     }
+
+    fun createComment(postId: Int, comment: Comment): Comment {
+        for (post in posts) {
+            if (post.id == postId) {
+                comments += comment
+                return comment
+            }
+        }
+        return throw PostNotFoundException()
+    }
 }
 
+class PostNotFoundException() : RuntimeException()
+
 fun main() {
+
     val likes = Likes()
     val comments = Comments()
     val copyright = Copyright()
@@ -244,6 +281,7 @@ fun main() {
     val geo = Geo()
     val copyHistory = emptyArray<Post>()
     val donut = Donut()
+    val comment = Comment()
     val myPost = Post(
         id = 1,
         likes = likes,
@@ -263,31 +301,38 @@ fun main() {
     println(likes.count)
     println(comments.count)
 
-    WallService.add(Post(
-        comments = comments,
-        likes = likes,
-        copyright = copyright,
-        reposts = reposts,
-        views = views,
-        postSource = postSource,
-        geo = geo,
-        copyHistory = copyHistory,
-        donut = donut
+    WallService.add(
+        Post(
+            comments = comments,
+            likes = likes,
+            copyright = copyright,
+            reposts = reposts,
+            views = views,
+            postSource = postSource,
+            geo = geo,
+            copyHistory = copyHistory,
+            donut = donut
+        )
     )
+    WallService.add(
+        Post(
+            id = 10,
+            comments = comments,
+            likes = likes,
+            text = "It's the second post with id",
+            copyright = copyright,
+            reposts = reposts,
+            views = views,
+            postSource = postSource,
+            geo = geo,
+            copyHistory = copyHistory,
+            donut = donut
+        )
     )
-    WallService.add(Post(
-        id = 10,
-        comments = comments,
-        likes = likes,
-        text = "It's the second post",
-        copyright = copyright,
-        reposts = reposts,
-        views = views,
-        postSource = postSource,
-        geo = geo,
-        copyHistory = copyHistory,
-        donut = donut
-    ))
     println(myPost)
+    println()
     WallService.printAllPosts()
+    WallService.createComment(postId = 2, comment)
+    println(comment)
+    WallService.createComment(postId = 0, comment)
 }
