@@ -1,5 +1,4 @@
-import org.junit.Assert.assertFalse
-import org.junit.Assert.assertTrue
+import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
 
@@ -37,7 +36,7 @@ class WallServiceTest {
 
         WallService.add(myPost)
         result = (myPost.id > 0)
-        assertTrue(result)
+        Assert.assertTrue(result)
     }
 
     @Test
@@ -51,7 +50,6 @@ class WallServiceTest {
         val geo = Geo()
         val copyHistory = emptyArray<Post>()
         val donut = Donut()
-        val result: Boolean
 
         WallService.add(
             Post(
@@ -79,22 +77,23 @@ class WallServiceTest {
                 donut = donut
             )
         )
-        result = WallService.update(
-            Post(
-                id = 2,
-                likes = likes,
-                comments = comments,
-                text = "Updated post",
-                copyright = copyright,
-                reposts = reposts,
-                views = views,
-                postSource = postSource,
-                geo = geo,
-                copyHistory = copyHistory,
-                donut = donut
+        Assert.assertTrue(
+            WallService.update(
+                Post(
+                    id = 2,
+                    likes = likes,
+                    comments = comments,
+                    text = "Updated post",
+                    copyright = copyright,
+                    reposts = reposts,
+                    views = views,
+                    postSource = postSource,
+                    geo = geo,
+                    copyHistory = copyHistory,
+                    donut = donut
+                )
             )
         )
-        assertTrue(result)
     }
 
     @Test
@@ -110,6 +109,7 @@ class WallServiceTest {
         val donut = Donut()
         val result: Boolean
 
+        //Дважды добавляется пост, чтобы было 2 поста
         WallService.add(
             Post(
                 likes = likes,
@@ -123,6 +123,7 @@ class WallServiceTest {
                 donut = donut
             )
         )
+
         WallService.add(
             Post(
                 likes = likes,
@@ -151,7 +152,8 @@ class WallServiceTest {
                 donut = donut
             )
         )
-        assertFalse(result)
+        Assert.assertFalse(result)
     }
+
 
 }
