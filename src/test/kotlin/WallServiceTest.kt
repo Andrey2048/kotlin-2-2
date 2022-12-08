@@ -155,5 +155,65 @@ class WallServiceTest {
         Assert.assertFalse(result)
     }
 
+    @Test(expected = PostNotFoundException::class)
+    fun shouldThrow() {
+        val likes = Likes()
+        val comments = Comments()
+        val copyright = Copyright()
+        val reposts = Reposts()
+        val views = Views()
+        val postSource = PostSource()
+        val geo = Geo()
+        val copyHistory = emptyArray<Post>()
+        val donut = Donut()
+        val comment = Comment()
+        val myPost = Post(
+            id = 1,
+            likes = likes,
+            comments = comments,
+            copyright = copyright,
+            reposts = reposts,
+            views = views,
+            postSource = postSource,
+            geo = geo,
+            copyHistory = copyHistory,
+            donut = donut
+        )
+        WallService.add(myPost)
+        WallService.createComment(postId = 0, comment)
+    }
+
+    @Test
+    fun createComment() {
+        val likes = Likes()
+        val comments = Comments()
+        val copyright = Copyright()
+        val reposts = Reposts()
+        val views = Views()
+        val postSource = PostSource()
+        val geo = Geo()
+        val copyHistory = emptyArray<Post>()
+        val donut = Donut()
+        val comment = Comment()
+        val myPost = Post(
+            likes = likes,
+            comments = comments,
+            copyright = copyright,
+            reposts = reposts,
+            views = views,
+            postSource = postSource,
+            geo = geo,
+            copyHistory = copyHistory,
+            donut = donut
+        )
+
+        WallService.add(myPost) //появился пост с id=1
+        WallService.add(myPost) //появился пост с id=2
+
+        val resultComment = WallService.createComment(postId = 2, comment = comment)
+
+        Assert.assertSame(resultComment, comment)
+
+    }
 
 }

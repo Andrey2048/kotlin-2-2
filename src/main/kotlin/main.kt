@@ -255,6 +255,7 @@ object WallService {
 
     fun clear() {
         posts = emptyArray()
+        counter = 0
     }
 
     fun createComment(postId: Int, comment: Comment): Comment {
